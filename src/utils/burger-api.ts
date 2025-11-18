@@ -1,7 +1,19 @@
 import { setCookie, getCookie } from './cookie';
 import { TIngredient, TOrder, TOrdersData, TUser } from './types';
 
-const URL = process.env.BURGER_API_URL;
+// Отладка дремучая, люби её император
+console.log('=== DEBUG BURGER-API ===');
+console.log('process.env:', process.env);
+console.log('BURGER_API_URL:', process.env.BURGER_API_URL);
+console.log('REACT_APP_BURGER_API_URL:', process.env.REACT_APP_BURGER_API_URL);
+console.log('=======================');
+
+let URL =
+  process.env.REACT_APP_BURGER_API_URL ||
+  process.env.BURGER_API_URL ||
+  'https://norma.education-services.ru/api';
+
+console.log('Final URL:', URL);
 
 const checkResponse = <T>(res: Response): Promise<T> =>
   res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
@@ -71,13 +83,22 @@ type TOrdersResponse = TServerResponse<{
   data: TOrder[];
 }>;
 
-export const getIngredientsApi = () =>
-  fetch(`${URL}/ingredients`)
-    .then((res) => checkResponse<TIngredientsResponse>(res))
+export const getIngredientsApi = () => {
+  console.log('Making request to:', `${URL}/ingredients`);
+  return fetch(`${URL}/ingredients`)
+    .then((res) => {
+      console.log('Response status:', res.status);
+      return checkResponse<TIngredientsResponse>(res);
+    })
     .then((data) => {
       if (data?.success) return data.data;
       return Promise.reject(data);
+    })
+    .catch((error) => {
+      console.error('Error in getIngredientsApi:', error);
+      throw error;
     });
+};
 
 export const getFeedsApi = () =>
   fetch(`${URL}/orders/all`)
