@@ -1,5 +1,21 @@
+import { FC, memo, useCallback } from 'react';
 import styles from './modal-overlay.module.css';
 
-export const ModalOverlayUI = ({ onClick }: { onClick: () => void }) => (
-  <div className={styles.overlay} onClick={onClick} />
-);
+interface ModalOverlayUIProps {
+  onClick: () => void;
+}
+
+export const ModalOverlayUI: FC<ModalOverlayUIProps> = memo(({ onClick }) => {
+  const handleClick = useCallback(() => {
+    onClick();
+  }, [onClick]);
+
+  return (
+    <div
+      className={styles.overlay}
+      onClick={handleClick}
+      role='presentation'
+      aria-hidden='true'
+    />
+  );
+});

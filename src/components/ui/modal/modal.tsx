@@ -1,26 +1,56 @@
-import { FC, memo } from 'react';
-
-import styles from './modal.module.css';
-
+import { FC, memo, useCallback } from 'react';
 import { CloseIcon } from '@zlden/react-developer-burger-ui-components';
+import styles from './modal.module.css';
 import { TModalUIProps } from './type';
 import { ModalOverlayUI } from '@ui';
 
 export const ModalUI: FC<TModalUIProps> = memo(
-  ({ title, onClose, children }) => (
-    <>
-      <div className={styles.modal}>
-        <div className={styles.header}>
-          <h3 className={`${styles.title} text text_type_main-large`}>
-            {title}
-          </h3>
-          <button className={styles.button} type='button'>
-            <CloseIcon type='primary' onClick={onClose} />
-          </button>
+  ({ title, onClose, children }) => {
+    const handleButtonClick = useCallback(() => {
+      onClose();
+    }, [onClose]);
+
+    const handleKeyDown = useCallback(
+      (event: React.KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          onClose();
+        }
+      },
+      [onClose]
+    );
+
+    return (
+      <>
+        <div
+          className={styles.modal}
+          role='dialog'
+          aria-modal='true'
+          aria-labelledby={title ? 'modal-title' : undefined}
+          onKeyDown={handleKeyDown}
+          tabIndex={-1}
+        >
+          <div className={styles.header}>
+            {title && (
+              <h3
+                id='modal-title'
+                className={`${styles.title} text text_type_main-large`}
+              >
+                {title}
+              </h3>
+            )}
+            <button
+              className={styles.button}
+              type='button'
+              onClick={handleButtonClick}
+              aria-label='Закрыть модальное окно'
+            >
+              <CloseIcon type='primary' />
+            </button>
+          </div>
+          <div className={styles.content}>{children}</div>
         </div>
-        <div className={styles.content}>{children}</div>
-      </div>
-      <ModalOverlayUI onClick={onClose} />
-    </>
-  )
+        <ModalOverlayUI onClick={onClose} />
+      </>
+    );
+  }
 );
