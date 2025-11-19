@@ -64,32 +64,28 @@ export const OrderCardUI: FC<OrderCardUIProps> = memo(
         {isProfileOrders && <OrderStatus status={orderInfo.status} />}
         <div className={`pt-6 ${styles.order_content}`}>
           <ul className={styles.ingredients}>
-            {ingredientsWithStyles.map(
-              (
-                { ingredient, zIndex, right, isLast, hasRemains, opacity },
-                index
-              ) => (
-                <li
-                  className={styles.img_wrap}
-                  style={{ zIndex, right }}
-                  key={ingredient._id}
-                >
-                  <img
-                    style={{ opacity }}
-                    className={styles.img}
-                    src={ingredient.image_mobile}
-                    alt={ingredient.name}
-                  />
-                  {isLast && hasRemains && (
-                    <span
-                      className={`text text_type_digits-default ${styles.remains}`}
-                    >
-                      +{orderInfo.remains}
-                    </span>
-                  )}
-                </li>
-              )
-            )}
+            {ingredientsWithStyles.map((item) => (
+              <li
+                className={styles.img_wrap}
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                style={{ zIndex: item.zIndex, right: item.right }}
+                key={item.ingredient._id}
+              >
+                <img
+                  style={{ opacity: item.opacity }}
+                  className={styles.img}
+                  src={item.ingredient.image_mobile}
+                  alt={item.ingredient.name}
+                />
+                {item.isLast && item.hasRemains && (
+                  <span
+                    className={`text text_type_digits-default ${styles.remains}`}
+                  >
+                    +{orderInfo.remains}
+                  </span>
+                )}
+              </li>
+            ))}
           </ul>
           <div className={styles.total}>
             <span
