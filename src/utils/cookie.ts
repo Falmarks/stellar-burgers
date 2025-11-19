@@ -1,3 +1,12 @@
+interface CookieProps {
+  expires?: Date | number | string;
+  path?: string;
+  domain?: string;
+  secure?: boolean;
+  samesite?: 'strict' | 'lax' | 'none';
+  [key: string]: string | number | Date | boolean | undefined;
+}
+
 export function getCookie(name: string): string | undefined {
   const matches = document.cookie.match(
     new RegExp(
@@ -13,35 +22,39 @@ export function getCookie(name: string): string | undefined {
 export function setCookie(
   name: string,
   value: string,
-  props: { [key: string]: string | number | Date | boolean } = {}
-) {
-  props = {
+  props: CookieProps = {}
+): void {
+  const options: CookieProps = {
     path: '/',
     ...props
   };
 
-  let exp = props.expires;
-  if (exp && typeof exp === 'number') {
-    const d = new Date();
-    d.setTime(d.getTime() + exp * 1000);
-    exp = props.expires = d;
+  let { expires } = options;
+
+  if (typeof expires === 'number' && expires) {
+    const date = new Date();
+    date.setTime(date.getTime() + expires * 1000);
+    expires = options.expires = date;
   }
 
-  if (exp && exp instanceof Date) {
-    props.expires = exp.toUTCString();
+  if (expires instanceof Date) {
+    options.expires = expires.toUTCString();
   }
-  value = encodeURIComponent(value);
-  let updatedCookie = name + '=' + value;
-  for (const propName in props) {
-    updatedCookie += '; ' + propName;
-    const propValue = props[propName];
+
+  const encodedValue = encodeURIComponent(value);
+  let cookieString = `${name}=${encodedValue}`;
+
+  Object.entries(options).forEach(([propName, propValue]) => {
+    cookieString += `; ${propName}`;
+
     if (propValue !== true) {
-      updatedCookie += '=' + propValue;
+      cookieString += `=${String(propValue)}`;
     }
-  }
-  document.cookie = updatedCookie;
+  });
+
+  document.cookie = cookieString;
 }
 
-export function deleteCookie(name: string) {
+export function deleteCookie(name: string): void {
   setCookie(name, '', { expires: -1 });
 }

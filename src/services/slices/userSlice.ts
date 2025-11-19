@@ -13,27 +13,21 @@ import {
 import { deleteCookie, setCookie } from '../../utils/cookie';
 
 type TUserState = {
-  refreshToken: string;
-  accessToken: string;
   user: TUser | null;
   userOrders: TOrder[];
-  isRegisterSuccess: boolean;
-  isLoginSuccess: boolean;
-  isUpdateSuccess: boolean;
   isAuthChecked: boolean;
   errorText: string | undefined;
+  isRegisterSuccess: boolean;
+  isLoginSuccess: boolean;
 };
 
 const initialState: TUserState = {
-  refreshToken: '',
-  accessToken: '',
   user: null,
   userOrders: [],
-  isRegisterSuccess: false,
-  isLoginSuccess: false,
-  isUpdateSuccess: false,
   isAuthChecked: false,
-  errorText: ''
+  errorText: undefined,
+  isRegisterSuccess: false,
+  isLoginSuccess: false
 };
 
 export const registerUser = createAsyncThunk(
@@ -94,66 +88,74 @@ export const userSlice = createSlice({
     },
     setUser: (state, action: PayloadAction<TUser | null>) => {
       state.user = action.payload;
+    },
+    clearError: (state) => {
+      state.errorText = undefined;
+    },
+    clearAuthFlags: (state) => {
+      state.isRegisterSuccess = false;
+      state.isLoginSuccess = false;
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(registerUser.pending, (state) => {
-      state.isRegisterSuccess = false;
-    });
-    builder.addCase(registerUser.rejected, (state, action) => {
-      state.isRegisterSuccess = false;
-      state.errorText = action.error.message;
-      console.log(action.error.message);
-    });
-    builder.addCase(registerUser.fulfilled, (state, action) => ({
-      ...state,
-      ...action.payload,
-      isRegisterSuccess: true,
-      errorText: ''
-    }));
-
-    builder.addCase(loginUser.pending, (state) => {
-      state.isLoginSuccess = false;
-    });
-    builder.addCase(loginUser.rejected, (state, action) => {
-      state.isLoginSuccess = false;
-      state.errorText = action.error.message;
-      console.log(action.error.message);
-    });
-    builder.addCase(loginUser.fulfilled, (state, action) => ({
-      ...state,
-      ...action.payload,
-      isLoginSuccess: true,
-      errorText: ''
-    }));
-
-    builder.addCase(updateUser.pending, (state) => {
-      state.isUpdateSuccess = false;
-    });
-    builder.addCase(updateUser.rejected, (state, action) => {
-      state.isUpdateSuccess = false;
-      console.log(action.error.message);
-    });
-    builder.addCase(updateUser.fulfilled, (state, action) => {
-      state.isUpdateSuccess = true;
-      state.user = action.payload.user;
-    });
-
-    builder.addCase(getUserOrders.rejected, (_, action) => {
-      console.log(action.error.message);
-    });
-    builder.addCase(getUserOrders.fulfilled, (state, action) => {
-      state.userOrders = action.payload;
-    });
-
-    builder.addCase(userLogout.rejected, (_, action) => {
-      console.log(action.error.message);
-    });
-    builder.addCase(userLogout.fulfilled, () => ({
-      ...initialState,
-      isAuthChecked: true
-    }));
+    builder
+      .addCase(registerUser.pending, (state) => {
+        state.isRegisterSuccess = false;
+        state.errorText = undefined;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.isRegisterSuccess = false;
+        state.errorText = action.error.message || 'Registration failed';
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.isRegisterSuccess = true;
+        state.user = action.payload.user;
+        state.errorText = undefined;
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.isLoginSuccess = false;
+        state.errorText = undefined;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.isLoginSuccess = false;
+        state.errorText = action.error.message || 'Login failed';
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.isLoginSuccess = true;
+        state.user = action.payload.user;
+        state.errorText = undefined;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.errorText = action.error.message || 'Update failed';
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.errorText = undefined;
+      })
+      .addCase(getUserOrders.rejected, (state, action) => {
+        state.errorText = action.error.message || 'Failed to get orders';
+      })
+      .addCase(getUserOrders.fulfilled, (state, action) => {
+        state.userOrders = action.payload;
+        state.errorText = undefined;
+      })
+      .addCase(userLogout.rejected, (state, action) => {
+        state.errorText = action.error.message || 'Logout failed';
+      })
+      .addCase(userLogout.fulfilled, (state) => {
+        state.user = null;
+        state.userOrders = [];
+        state.isRegisterSuccess = false;
+        state.isLoginSuccess = false;
+        state.errorText = undefined;
+      })
+      .addCase(checkUserAuth.rejected, (state, action) => {
+        state.errorText = action.error.message || 'Auth check failed';
+      });
   }
 });
 
-export const { setUser, setIsAuthChecked } = userSlice.actions;
+export const { setUser, setIsAuthChecked, clearError, clearAuthFlags } =
+  userSlice.actions;
+
+export default userSlice.reducer;

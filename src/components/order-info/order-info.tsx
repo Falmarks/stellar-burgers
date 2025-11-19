@@ -1,16 +1,20 @@
 import { FC, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
-import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from '../../services/store';
 import { getOrderByNumber } from '../../services/slices/orderBurgerSlice';
+
+type TIngredientsWithCount = {
+  [key: string]: TIngredient & { count: number };
+};
 
 export const OrderInfo: FC = () => {
   const dispatch = useDispatch();
   const { number } = useParams();
-  const orderData = useSelector((state) => state.orderBurger.orderByNumber);
 
+  const orderData = useSelector((state) => state.orderBurger.orderByNumber);
   const ingredients = useSelector(
     (state) => state.burgerIngredients.ingredients
   );
@@ -23,10 +27,6 @@ export const OrderInfo: FC = () => {
     if (!orderData || !ingredients.length) return null;
 
     const date = new Date(orderData.createdAt);
-
-    type TIngredientsWithCount = {
-      [key: string]: TIngredient & { count: number };
-    };
 
     const ingredientsInfo = orderData.ingredients.reduce(
       (acc: TIngredientsWithCount, item) => {

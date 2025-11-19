@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ProfileMenuUI } from '@ui';
 import { useDispatch } from '../../services/store';
@@ -9,10 +9,10 @@ export const ProfileMenu: FC = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     dispatch(userLogout());
     navigate('/');
-  };
+  }, [dispatch, navigate]);
 
   return <ProfileMenuUI handleLogout={handleLogout} pathname={pathname} />;
 };

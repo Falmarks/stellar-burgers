@@ -20,12 +20,12 @@ export const burgerConstructorSlice = createSlice({
         if (action.payload.type === 'bun') {
           state.bun = action.payload;
         } else {
-          state.ingredients = [...state.ingredients, action.payload];
+          state.ingredients.push(action.payload);
         }
       },
       prepare: (ingredient: TIngredient) => {
         const id = crypto.randomUUID();
-        return { payload: { ...ingredient, id: id } };
+        return { payload: { ...ingredient, id } };
       }
     },
     removeIngredient: (state, action: PayloadAction<string>) => {
@@ -34,20 +34,22 @@ export const burgerConstructorSlice = createSlice({
       );
     },
     moveUp: (state, action: PayloadAction<number>) => {
-      const currentElement = action.payload;
-      const upperElement = action.payload - 1;
-      [state.ingredients[currentElement], state.ingredients[upperElement]] = [
-        state.ingredients[upperElement],
-        state.ingredients[currentElement]
-      ];
+      const index = action.payload;
+      if (index > 0 && index < state.ingredients.length) {
+        [state.ingredients[index], state.ingredients[index - 1]] = [
+          state.ingredients[index - 1],
+          state.ingredients[index]
+        ];
+      }
     },
     moveDown: (state, action: PayloadAction<number>) => {
-      const currentElement = action.payload;
-      const downElement = action.payload + 1;
-      [state.ingredients[currentElement], state.ingredients[downElement]] = [
-        state.ingredients[downElement],
-        state.ingredients[currentElement]
-      ];
+      const index = action.payload;
+      if (index >= 0 && index < state.ingredients.length - 1) {
+        [state.ingredients[index], state.ingredients[index + 1]] = [
+          state.ingredients[index + 1],
+          state.ingredients[index]
+        ];
+      }
     },
     clearConstructor: () => initialState
   }

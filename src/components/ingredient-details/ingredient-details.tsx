@@ -9,6 +9,7 @@ export const IngredientDetails: FC = () => {
   const ingredients = useSelector(
     (state) => state.burgerIngredients.ingredients
   );
+
   const ingredientData = useMemo(
     () => ingredients.find((item) => item._id === id),
     [ingredients, id]

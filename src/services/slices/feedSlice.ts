@@ -6,7 +6,8 @@ type TFeedState = {
   orders: TOrder[];
   total: number;
   totalToday: number;
-  isLoading?: boolean;
+  isLoading: boolean;
+  error?: null;
 };
 
 const initialState: TFeedState = {
@@ -24,18 +25,31 @@ export const getFeed = createAsyncThunk(
 export const feedSlice = createSlice({
   name: 'feed',
   initialState,
-  reducers: {},
+  reducers: {
+    clearFeedError: (state) => {
+      state.error = null;
+    }
+  },
   extraReducers: (builder) => {
-    builder.addCase(getFeed.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(getFeed.rejected, (state, action) => {
-      state.isLoading = false;
-      console.log(action.error.message);
-    });
-    builder.addCase(getFeed.fulfilled, (_, action) => ({
-      ...action.payload,
-      isLoading: false
-    }));
+    builder
+      .addCase(getFeed.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getFeed.rejected, (state) => {
+        state.isLoading = false;
+        state.error = null; // или просто не устанавливаем error
+      })
+      .addCase(getFeed.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.orders = action.payload.orders;
+        state.total = action.payload.total;
+        state.totalToday = action.payload.totalToday;
+        state.error = null;
+      });
   }
 });
+
+export const { clearFeedError } = feedSlice.actions;
+
+export default feedSlice.reducer;
