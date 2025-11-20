@@ -18,14 +18,23 @@ export const IngredientDetailsUI: FC<IngredientDetailsUIProps> = memo(
     );
 
     return (
-      <div className={styles.content}>
+      <div className={styles.content} data-testid='ingredient-details'>
         <img
           className={styles.img}
           alt={`Изображение ${name}`}
           src={image_large}
+          data-testid='ingredient-image'
         />
-        <h3 className='text text_type_main-medium mt-2 mb-4'>{name}</h3>
-        <ul className={`${styles.nutritional_values} text_type_main-default`}>
+        <h3
+          className='text text_type_main-medium mt-2 mb-4'
+          data-testid='ingredient-name'
+        >
+          {name}
+        </h3>
+        <ul
+          className={`${styles.nutritional_values} text_type_main-default`}
+          data-testid='nutritional-values'
+        >
           {nutritionalValues.map((item) => (
             <li key={item.label} className={styles.nutritional_value}>
               <p className={`text mb-2 ${styles.text}`}>{item.label}</p>

@@ -62,7 +62,10 @@ export const BurgerIngredientsUI: FC<BurgerIngredientsUIProps> = memo(
     );
 
     return (
-      <section className={styles.burger_ingredients}>
+      <section
+        className={styles.burger_ingredients}
+        data-testid='burger-ingredients'
+      >
         <nav>
           <ul className={styles.menu}>
             {tabConfig.map((tab) => (
@@ -77,7 +80,7 @@ export const BurgerIngredientsUI: FC<BurgerIngredientsUIProps> = memo(
             ))}
           </ul>
         </nav>
-        <div className={styles.content}>
+        <div className={styles.content} data-testid='ingredients-list'>
           {categoryConfig.map((category) => (
             <IngredientsCategory
               key={category.title}

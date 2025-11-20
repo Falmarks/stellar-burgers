@@ -28,12 +28,14 @@ export const ModalUI: FC<TModalUIProps> = memo(
           aria-labelledby={title ? 'modal-title' : undefined}
           onKeyDown={handleKeyDown}
           tabIndex={-1}
+          data-testid='modal'
         >
           <div className={styles.header}>
             {title && (
               <h3
                 id='modal-title'
                 className={`${styles.title} text text_type_main-large`}
+                data-testid='modal-title'
               >
                 {title}
               </h3>
@@ -43,11 +45,14 @@ export const ModalUI: FC<TModalUIProps> = memo(
               type='button'
               onClick={handleButtonClick}
               aria-label='Закрыть модальное окно'
+              data-testid='modal-close-button'
             >
               <CloseIcon type='primary' />
             </button>
           </div>
-          <div className={styles.content}>{children}</div>
+          <div className={styles.content} data-testid='modal-content'>
+            {children}
+          </div>
         </div>
         <ModalOverlayUI onClick={onClose} />
       </>

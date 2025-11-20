@@ -30,10 +30,16 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
   }, [orderRequest, orderModalData]);
 
   return (
-    <section className={styles.burger_constructor}>
+    <section
+      className={styles.burger_constructor}
+      data-testid='burger-constructor'
+    >
       {/* Верхняя булка */}
       {bun ? (
-        <div className={`${styles.element} mb-4 mr-4`}>
+        <div
+          className={`${styles.element} mb-4 mr-4`}
+          data-testid='constructor-bun-top'
+        >
           <ConstructorElement
             type='top'
             isLocked
@@ -45,13 +51,14 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
       ) : (
         <div
           className={`${styles.noBuns} ${styles.noBunsTop} ml-8 mb-4 mr-5 text text_type_main-default`}
+          data-testid='no-bun-top'
         >
           Выберите булки
         </div>
       )}
 
       {/* Начинка */}
-      <ul className={styles.elements}>
+      <ul className={styles.elements} data-testid='constructor-fillings'>
         {hasIngredients ? (
           ingredients.map((item: TConstructorIngredient, index: number) => (
             <BurgerConstructorElement
@@ -64,6 +71,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
         ) : (
           <div
             className={`${styles.noBuns} ml-8 mb-4 mr-5 text text_type_main-default`}
+            data-testid='no-fillings'
           >
             Выберите начинку
           </div>
@@ -72,7 +80,10 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
 
       {/* Нижняя булка */}
       {bun ? (
-        <div className={`${styles.element} mt-4 mr-4`}>
+        <div
+          className={`${styles.element} mt-4 mr-4`}
+          data-testid='constructor-bun-bottom'
+        >
           <ConstructorElement
             type='bottom'
             isLocked
@@ -84,6 +95,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
       ) : (
         <div
           className={`${styles.noBuns} ${styles.noBunsBottom} ml-8 mb-4 mr-5 text text_type_main-default`}
+          data-testid='no-bun-bottom'
         >
           Выберите булки
         </div>
@@ -100,8 +112,10 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
           type='primary'
           size='large'
           onClick={onOrderClick}
+          data-testid='order-button'
+          disabled={orderRequest || !bun || ingredients.length === 0}
         >
-          Оформить заказ
+          {orderRequest ? 'Оформляем...' : 'Оформить заказ'}
         </Button>
       </div>
 

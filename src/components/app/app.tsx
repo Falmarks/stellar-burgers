@@ -46,12 +46,6 @@ const App = () => {
     { path: '/profile/orders', component: ProfileOrders }
   ];
 
-  const modalRoutes = [
-    { path: '/ingredients/:id', title: 'Детали ингредиента' },
-    { path: '/feed/:number', title: 'Детали заказа' },
-    { path: '/profile/orders/:number', title: 'Детали заказа' }
-  ];
-
   return (
     <div className={styles.app}>
       <AppHeader />
@@ -59,7 +53,12 @@ const App = () => {
       <Routes location={backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route path='/feed/:number' element={<OrderInfo />} />
+        <Route
+          path='/profile/orders/:number'
+          element={<Protected onlyUnAuth={false} component={<OrderInfo />} />}
+        />
 
         {protectedRoutes.map(({ path, component: Component }) => (
           <Route
@@ -78,24 +77,32 @@ const App = () => {
         ))}
         <Route path='*' element={<NotFound404 />} />
       </Routes>
-
       {backgroundLocation && (
         <Routes>
-          {modalRoutes.map(({ path, title }) => (
-            <Route
-              key={path}
-              path={path}
-              element={
-                <Modal title={title} onClose={handleModalClose}>
-                  {path.includes('ingredients') ? (
-                    <IngredientDetails />
-                  ) : (
-                    <OrderInfo />
-                  )}
-                </Modal>
-              }
-            />
-          ))}
+          <Route
+            path='/ingredients/:id'
+            element={
+              <Modal title='Детали ингредиента' onClose={handleModalClose}>
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal title='Детали заказа' onClose={handleModalClose}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
+          <Route
+            path='/profile/orders/:number'
+            element={
+              <Modal title='Детали заказа' onClose={handleModalClose}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
         </Routes>
       )}
     </div>
