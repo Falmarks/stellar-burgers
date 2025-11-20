@@ -64,12 +64,11 @@ export const OrderCardUI: FC<OrderCardUIProps> = memo(
         {isProfileOrders && <OrderStatus status={orderInfo.status} />}
         <div className={`pt-6 ${styles.order_content}`}>
           <ul className={styles.ingredients}>
-            {ingredientsWithStyles.map((item) => (
+            {ingredientsWithStyles.map((item, index) => (
               <li
                 className={styles.img_wrap}
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 style={{ zIndex: item.zIndex, right: item.right }}
-                key={item.ingredient._id}
+                key={`${item.ingredient._id}-${index}`}
               >
                 <img
                   style={{ opacity: item.opacity }}

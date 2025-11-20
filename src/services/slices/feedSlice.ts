@@ -17,10 +17,7 @@ const initialState: TFeedState = {
   isLoading: false
 };
 
-export const getFeed = createAsyncThunk(
-  'feed/getAll',
-  async () => await getFeedsApi()
-);
+export const getFeed = createAsyncThunk('feed/getAll', getFeedsApi);
 
 export const feedSlice = createSlice({
   name: 'feed',
@@ -38,7 +35,7 @@ export const feedSlice = createSlice({
       })
       .addCase(getFeed.rejected, (state) => {
         state.isLoading = false;
-        state.error = null; // или просто не устанавливаем error
+        state.error = null;
       })
       .addCase(getFeed.fulfilled, (state, action) => {
         state.isLoading = false;

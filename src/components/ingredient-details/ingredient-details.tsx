@@ -3,6 +3,7 @@ import { Preloader } from '../ui/preloader';
 import { IngredientDetailsUI } from '../ui/ingredient-details';
 import { useParams } from 'react-router-dom';
 import { useSelector } from '../../services/store';
+import styles from './ingredient-details.module.css';
 
 export const IngredientDetails: FC = () => {
   const { id } = useParams();
@@ -19,5 +20,9 @@ export const IngredientDetails: FC = () => {
     return <Preloader />;
   }
 
-  return <IngredientDetailsUI ingredientData={ingredientData} />;
+  return (
+    <div className={styles.container}>
+      <IngredientDetailsUI ingredientData={ingredientData} />
+    </div>
+  );
 };

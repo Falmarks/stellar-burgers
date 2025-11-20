@@ -15,7 +15,6 @@ import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Protected } from '../Protected/Protected';
 import { useDispatch } from '../../services/store';
 import { getIngredients } from '../../services/slices/burgerIngredientsSlice';
-import { getFeed } from '../../services/slices/feedSlice';
 import { checkUserAuth } from '../../services/slices/userSlice';
 import '../../index.css';
 import styles from './app.module.css';
@@ -32,7 +31,6 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getIngredients());
-    dispatch(getFeed());
     dispatch(checkUserAuth());
   }, [dispatch]);
 
@@ -78,9 +76,6 @@ const App = () => {
             element={<Protected onlyUnAuth={false} component={<Component />} />}
           />
         ))}
-
-        <Route path='/profile/orders/:number' element={<OrderInfo />} />
-        <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 

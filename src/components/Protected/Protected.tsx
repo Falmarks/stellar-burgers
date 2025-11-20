@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from '../../services/store';
 import { Preloader } from '@ui';
 
@@ -14,17 +14,20 @@ export const Protected = ({
 }: ProtectedProps): React.JSX.Element => {
   const user = useSelector((state) => state.user.user);
   const isAuthChecked = useSelector((state) => state.user.isAuthChecked);
+  const location = useLocation();
+
+  const from = location.state?.from || '/';
 
   if (!isAuthChecked) {
     return <Preloader />;
   }
 
   if (onlyUnAuth && user) {
-    return <Navigate to='/profile' replace />;
+    return <Navigate to={from} replace />;
   }
 
   if (!onlyUnAuth && !user) {
-    return <Navigate to='/login' replace />;
+    return <Navigate to='/login' state={{ from: location }} replace />;
   }
 
   return component;
