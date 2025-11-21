@@ -1,4 +1,3 @@
-// Мокаем API модуль с правильным путем
 jest.mock('../../../utils/burger-api', () => ({
   getFeedsApi: jest.fn()
 }));
@@ -23,7 +22,8 @@ describe('feed slice', () => {
     orders: [],
     total: 0,
     totalToday: 0,
-    isLoading: false
+    isLoading: false,
+    error: null
   };
 
   it('should handle getFeed.fulfilled', () => {
@@ -45,10 +45,14 @@ describe('feed slice', () => {
 
   it('should handle getFeed.rejected', () => {
     const action = {
-      type: getFeed.rejected.type
+      type: getFeed.rejected.type,
+      error: {
+        message: 'Test error message'
+      }
     };
     const state = feedSlice.reducer(initialState, action);
 
     expect(state.isLoading).toBe(false);
+    expect(state.error).toBe('Test error message');
   });
 });

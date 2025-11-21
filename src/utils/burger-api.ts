@@ -115,11 +115,10 @@ export const orderBurgerApi = (data: string[]): Promise<TNewOrderResponse> =>
     })
   });
 
-export const getOrderByNumberApi = (number: number): Promise<TOrder> =>
-  request<TOrdersResponse>(`orders/${number}`).then((data) => {
-    if (data.orders.length > 0) return data.orders[0];
-    throw new Error('Order not found');
-  });
+export const getOrderByNumberApi = (
+  number: number
+): Promise<{ orders: TOrder[] }> =>
+  request<TOrdersResponse>(`orders/${number}`);
 
 export type TRegisterData = {
   email: string;

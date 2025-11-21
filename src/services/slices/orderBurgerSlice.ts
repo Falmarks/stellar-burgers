@@ -35,7 +35,8 @@ export const getOrderByNumber = createAsyncThunk(
   'order/getByNumber',
   async (orderNumber: number, { rejectWithValue }) => {
     try {
-      return await getOrderByNumberApi(orderNumber);
+      const response = await getOrderByNumberApi(orderNumber);
+      return response.orders[0]; // ← берем первый заказ из массива
     } catch (error) {
       return rejectWithValue(
         error instanceof Error ? error.message : 'Unknown error'

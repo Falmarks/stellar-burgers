@@ -7,14 +7,15 @@ type TFeedState = {
   total: number;
   totalToday: number;
   isLoading: boolean;
-  error?: null;
+  error: string | null;
 };
 
 const initialState: TFeedState = {
   orders: [],
   total: 0,
   totalToday: 0,
-  isLoading: false
+  isLoading: false,
+  error: null
 };
 
 export const getFeed = createAsyncThunk('feed/getAll', getFeedsApi);
@@ -33,9 +34,9 @@ export const feedSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(getFeed.rejected, (state) => {
+      .addCase(getFeed.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = null;
+        state.error = action.error?.message || 'Unknown error';
       })
       .addCase(getFeed.fulfilled, (state, action) => {
         state.isLoading = false;

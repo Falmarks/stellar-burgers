@@ -1,21 +1,14 @@
-import { TOrder } from '@utils-types';
-
 export type FeedInfoUIProps = {
-  feed: {
-    orders: TOrder[];
-    total: number;
-    totalToday: number;
-    isLoading?: boolean;
-    error?: null;
-  };
   readyOrders: number[];
   pendingOrders: number[];
+  total: number;
+  totalToday: number;
 };
 
 export type HalfColumnProps = {
   orders: number[];
   title: string;
-  textColor?: string;
+  textColor?: 'blue' | 'default';
 };
 
 export type TColumnProps = {

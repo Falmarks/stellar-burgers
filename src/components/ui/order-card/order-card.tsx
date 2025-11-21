@@ -1,5 +1,4 @@
 import React, { FC, memo, useMemo } from 'react';
-import { Link, useLocation } from 'react-router-dom';
 import {
   CurrencyIcon,
   FormattedDate
@@ -9,10 +8,7 @@ import { OrderCardUIProps } from './type';
 import { OrderStatus } from '@components';
 
 export const OrderCardUI: FC<OrderCardUIProps> = memo(
-  ({ orderInfo, maxIngredients, locationState }) => {
-    const location = useLocation();
-    const isProfileOrders = location.pathname === '/profile/orders';
-
+  ({ orderInfo, maxIngredients }) => {
     const formattedNumber = useMemo(
       () => `#${String(orderInfo.number).padStart(6, '0')}`,
       [orderInfo.number]
@@ -44,12 +40,7 @@ export const OrderCardUI: FC<OrderCardUIProps> = memo(
     );
 
     return (
-      <Link
-        to={orderInfo.number.toString()}
-        relative='path'
-        state={locationState}
-        className={`p-6 mb-4 mr-2 ${styles.order}`}
-      >
+      <div className={`p-6 mb-4 mr-2 ${styles.order}`}>
         <div className={styles.order_info}>
           <span className={`text text_type_digits-default ${styles.number}`}>
             {formattedNumber}
@@ -61,7 +52,7 @@ export const OrderCardUI: FC<OrderCardUIProps> = memo(
         <h4 className={`pt-6 text text_type_main-medium ${styles.order_name}`}>
           {orderInfo.name}
         </h4>
-        {isProfileOrders && <OrderStatus status={orderInfo.status} />}
+        <OrderStatus status={orderInfo.status} />
         <div className={`pt-6 ${styles.order_content}`}>
           <ul className={styles.ingredients}>
             {ingredientsWithStyles.map((item, index) => (
@@ -95,7 +86,7 @@ export const OrderCardUI: FC<OrderCardUIProps> = memo(
             <CurrencyIcon type='primary' />
           </div>
         </div>
-      </Link>
+      </div>
     );
   }
 );

@@ -38,18 +38,14 @@ const Column: FC<TColumnProps> = memo(({ title, content }) => (
 ));
 
 export const FeedInfoUI: FC<FeedInfoUIProps> = memo(
-  ({ feed, readyOrders, pendingOrders }) => {
-    const { total, totalToday } = feed;
-
-    return (
-      <section className={styles.container}>
-        <div className={styles.columns}>
-          <HalfColumn orders={readyOrders} title='Готовы' textColor='blue' />
-          <HalfColumn orders={pendingOrders} title='В работе' />
-        </div>
-        <Column title='Выполнено за все время' content={total} />
-        <Column title='Выполнено за сегодня' content={totalToday} />
-      </section>
-    );
-  }
+  ({ readyOrders, pendingOrders, total, totalToday }) => (
+    <section className={styles.container}>
+      <div className={styles.columns}>
+        <HalfColumn orders={readyOrders} title='Готовы' textColor='blue' />
+        <HalfColumn orders={pendingOrders} title='В работе' />
+      </div>
+      <Column title='Выполнено за все время' content={total} />
+      <Column title='Выполнено за сегодня' content={totalToday} />
+    </section>
+  )
 );

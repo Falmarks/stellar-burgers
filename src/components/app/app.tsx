@@ -77,6 +77,8 @@ const App = () => {
         ))}
         <Route path='*' element={<NotFound404 />} />
       </Routes>
+
+      {/* Модальные окна */}
       {backgroundLocation && (
         <Routes>
           <Route
@@ -99,7 +101,7 @@ const App = () => {
             path='/profile/orders/:number'
             element={
               <Modal title='Детали заказа' onClose={handleModalClose}>
-                <OrderInfo />
+                <Protected onlyUnAuth={false} component={<OrderInfo />} />
               </Modal>
             }
           />

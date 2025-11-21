@@ -52,7 +52,8 @@ module.exports = {
       extensions: ['.js', '.jsx', '.ts', '.tsx']
     }),
     new HtmlWebpackPlugin({
-      template: './public/index.html'
+      template: './public/index.html',
+      inject: true // ← убедитесь что inject включен
     }),
     new Dotenv()
   ],
@@ -83,12 +84,19 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '/' // ← это критически важно
   },
   devServer: {
-    static: path.join(__dirname, './dist'),
+    static: {
+      directory: path.join(__dirname, './dist'),
+      publicPath: '/' // ← и это
+    },
     compress: true,
-    historyApiFallback: true,
-    port: 4000
+    historyApiFallback: {
+      index: '/index.html' // ← уточните index
+    },
+    port: 4000,
+    hot: true
   }
 };
