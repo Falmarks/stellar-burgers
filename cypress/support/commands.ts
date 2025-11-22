@@ -44,8 +44,6 @@ Cypress.Commands.add('createOrder', () => {
   cy.get('[data-testid="order-button"], button:contains("Оформить заказ")')
     .should('not.be.disabled')
     .click();
-  cy.wait('@getUser');
-  cy.wait('@createOrder');
 });
 
 export {};

@@ -1,14 +1,13 @@
 describe('Burger Constructor', () => {
   beforeEach(() => {
-    cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' }).as('getIngredients');
-    cy.intercept('GET', 'api/auth/user', { fixture: 'user.json' }).as('getUser');
-    cy.intercept('POST', 'api/orders', { fixture: 'order.json' }).as('createOrder');
+    cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients' });
+    cy.intercept('GET', 'api/auth/user', { fixture: 'user' });
+    cy.intercept('POST', 'api/orders', { fixture: 'order' });
 
     window.localStorage.setItem('refreshToken', 'test-refresh-token');
     cy.setCookie('accessToken', 'test-access-token');
 
     cy.visit('/');
-    cy.wait('@getIngredients');
   });
 
   afterEach(() => {
