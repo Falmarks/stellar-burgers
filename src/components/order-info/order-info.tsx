@@ -1,34 +1,71 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
-import { TIngredient } from '@utils-types';
+import { TIngredient, TOrder } from '@utils-types';
+import { useDispatch, useSelector } from '../../services/store';
+import { getOrderByNumber } from '../../services/slices/orderBurgerSlice';
+
+type TIngredientsWithCount = {
+  [key: string]: TIngredient & { count: number };
+};
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+  const dispatch = useDispatch();
+  const { number } = useParams();
+  const location = useLocation();
 
-  const ingredients: TIngredient[] = [];
+  const orderByNumber = useSelector((state) => state.orderBurger.orderByNumber);
+  const feedOrders = useSelector((state) => state.feed.orders);
+  const profileOrders = useSelector((state) => state.user.userOrders);
+  const ingredients = useSelector(
+    (state) => state.burgerIngredients.ingredients
+  );
 
-  /* Готовим данные для отображения */
+  const isModal = location.state?.background;
+  const isProfileOrder = location.pathname.includes('/profile/orders');
+
+  useEffect(() => {
+    if (!number) return;
+
+    const orderNumber = Number(number);
+
+    if (!isModal) {
+      dispatch(getOrderByNumber(orderNumber));
+    } else {
+      let existingOrder: TOrder | undefined;
+
+      if (isProfileOrder) {
+        existingOrder = profileOrders.find(
+          (order: TOrder) => order.number === orderNumber
+        );
+      } else {
+        existingOrder = feedOrders.find(
+          (order: TOrder) => order.number === orderNumber
+        );
+      }
+
+      if (!existingOrder) {
+        dispatch(getOrderByNumber(orderNumber));
+      }
+    }
+  }, [dispatch, number, feedOrders, profileOrders, isModal, isProfileOrder]);
+
+  const orderNumber = number ? Number(number) : null;
+
+  const orderData =
+    orderByNumber ||
+    (orderNumber && isProfileOrder
+      ? profileOrders.find((order: TOrder) => order.number === orderNumber)
+      : feedOrders.find((order: TOrder) => order.number === orderNumber));
+
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 
     const date = new Date(orderData.createdAt);
 
-    type TIngredientsWithCount = {
-      [key: string]: TIngredient & { count: number };
-    };
-
     const ingredientsInfo = orderData.ingredients.reduce(
-      (acc: TIngredientsWithCount, item) => {
+      (acc: TIngredientsWithCount, item: string) => {
         if (!acc[item]) {
           const ingredient = ingredients.find((ing) => ing._id === item);
           if (ingredient) {
@@ -40,14 +77,17 @@ export const OrderInfo: FC = () => {
         } else {
           acc[item].count++;
         }
-
         return acc;
       },
-      {}
+      {} as TIngredientsWithCount
     );
 
-    const total = Object.values(ingredientsInfo).reduce(
-      (acc, item) => acc + item.price * item.count,
+    const ingredientsArray = Object.values(ingredientsInfo) as (TIngredient & {
+      count: number;
+    })[];
+    const total = ingredientsArray.reduce(
+      (acc: number, item: TIngredient & { count: number }) =>
+        acc + item.price * item.count,
       0
     );
 

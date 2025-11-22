@@ -1,24 +1,39 @@
+import React, { forwardRef, useMemo } from 'react';
 import styles from './ingredients-category.module.css';
-import { forwardRef } from 'react';
 import { TIngredientsCategoryUIProps } from './type';
 import { BurgerIngredient } from '@components';
 
 export const IngredientsCategoryUI = forwardRef<
   HTMLUListElement,
   TIngredientsCategoryUIProps
->(({ title, titleRef, ingredients, ingredientsCounters }, ref) => (
-  <>
-    <h3 className='text text_type_main-medium mt-10 mb-6' ref={titleRef}>
-      {title}
-    </h3>
-    <ul className={styles.items} ref={ref}>
-      {ingredients.map((ingredient) => (
+>(({ title, titleRef, ingredients, ingredientsCounters }, ref) => {
+  const memoizedIngredients = useMemo(
+    () =>
+      ingredients.map((ingredient) => (
         <BurgerIngredient
-          ingredient={ingredient}
           key={ingredient._id}
+          ingredient={ingredient}
           count={ingredientsCounters[ingredient._id]}
         />
-      ))}
-    </ul>
-  </>
-));
+      )),
+    [ingredients, ingredientsCounters]
+  );
+
+  return (
+    <section
+      className={styles.category}
+      data-testid={`ingredients-category-${title.toLowerCase()}`}
+    >
+      <h3 className='text text_type_main-medium mt-10 mb-6' ref={titleRef}>
+        {title}
+      </h3>
+      <ul
+        className={styles.items}
+        ref={ref}
+        data-testid={`ingredients-${title.toLowerCase()}-list`}
+      >
+        {memoizedIngredients}
+      </ul>
+    </section>
+  );
+});

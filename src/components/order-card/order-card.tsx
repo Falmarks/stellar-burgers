@@ -1,17 +1,18 @@
 import { FC, memo, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
-
+import { useLocation, Link } from 'react-router-dom';
 import { OrderCardProps } from './type';
 import { TIngredient } from '@utils-types';
 import { OrderCardUI } from '../ui/order-card';
+import { useSelector } from '../../services/store';
+import styles from './order-card.module.css';
 
 const maxIngredients = 6;
 
 export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
   const location = useLocation();
-
-  /** TODO: взять переменную из стора */
-  const ingredients: TIngredient[] = [];
+  const ingredients = useSelector(
+    (state) => state.burgerIngredients.ingredients
+  );
 
   const orderInfo = useMemo(() => {
     if (!ingredients.length) return null;
@@ -35,6 +36,7 @@ export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
         : 0;
 
     const date = new Date(order.createdAt);
+
     return {
       ...order,
       ingredientsInfo,
@@ -47,11 +49,20 @@ export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
 
   if (!orderInfo) return null;
 
+  const getOrderPath = () => {
+    if (location.pathname.includes('/profile/orders')) {
+      return `/profile/orders/${order.number}`;
+    }
+    return `/feed/${order.number}`;
+  };
+
   return (
-    <OrderCardUI
-      orderInfo={orderInfo}
-      maxIngredients={maxIngredients}
-      locationState={{ background: location }}
-    />
+    <Link
+      to={getOrderPath()}
+      state={{ background: location }}
+      className={styles.link}
+    >
+      <OrderCardUI orderInfo={orderInfo} maxIngredients={maxIngredients} />
+    </Link>
   );
 });

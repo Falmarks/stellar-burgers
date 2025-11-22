@@ -1,13 +1,14 @@
 export type FeedInfoUIProps = {
-  feed: any;
   readyOrders: number[];
   pendingOrders: number[];
+  total: number;
+  totalToday: number;
 };
 
 export type HalfColumnProps = {
   orders: number[];
   title: string;
-  textColor?: string;
+  textColor?: 'blue' | 'default';
 };
 
 export type TColumnProps = {

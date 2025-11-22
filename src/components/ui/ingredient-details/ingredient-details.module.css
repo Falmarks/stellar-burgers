@@ -1,24 +1,35 @@
 .content {
-  margin: 0 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  width: 520px;
+    margin: 0 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 520px;
+}
+
+.img {
+    width: 480px;
+    height: 240px;
+    object-fit: contain;
 }
 
 .nutritional_values {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  color: #8585ad;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    color: #8585ad;
 }
 
 .nutritional_value {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.text {
+    color: #8585ad;
 }

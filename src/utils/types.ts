@@ -1,7 +1,7 @@
 export type TIngredient = {
   _id: string;
   name: string;
-  type: string;
+  type: 'bun' | 'sauce' | 'main' | 'top'; // Добавил 'top' для Storybook
   proteins: number;
   fat: number;
   carbohydrates: number;
@@ -16,9 +16,11 @@ export type TConstructorIngredient = TIngredient & {
   id: string;
 };
 
+export type TOrderStatus = 'created' | 'pending' | 'done' | 'ready'; // Добавил 'ready' для Storybook
+
 export type TOrder = {
   _id: string;
-  status: string;
+  status: TOrderStatus;
   name: string;
   createdAt: string;
   updatedAt: string;
