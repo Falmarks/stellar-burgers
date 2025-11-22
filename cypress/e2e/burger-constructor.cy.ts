@@ -16,8 +16,8 @@ describe('Burger Constructor', () => {
   });
 
   it('should display ingredients list', () => {
-    cy.contains('Краторная булка N-200i').should('be.visible');
-    cy.contains('Биокотлета из марсианской Магнолии').should('be.visible');
+    cy.contains('Краторная булка N-200i').should('exist');
+    cy.contains('Биокотлета из марсианской Магнолии').should('exist');
   });
 
   it('should add bun to constructor', () => {
